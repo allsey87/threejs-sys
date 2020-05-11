@@ -1,4 +1,5 @@
 use std::f64;
+use std::u32;
 
 use wasm_bindgen::prelude::*;
 
@@ -8,11 +9,19 @@ extern "C" {
     #[wasm_bindgen(constructor)]
     pub fn new() -> Scene;
     #[wasm_bindgen(method, js_name = add)]
-    pub fn add(this: &Scene, mesh: &Mesh);
+    pub fn add(this: &Scene, object: &Object3D);
 
     pub type Object3D;
+    #[wasm_bindgen(method, js_name = translateX)]
+    pub fn translate_x(this: &Object3D, distance: f64);
+    #[wasm_bindgen(method, js_name = translateY)]
+    pub fn translate_y(this: &Object3D, distance: f64);
     #[wasm_bindgen(method, js_name = translateZ)]
     pub fn translate_z(this: &Object3D, distance: f64);
+    #[wasm_bindgen(method, setter = position)]
+    pub fn set_position(this: &Object3D, position: &Vector3);
+    #[wasm_bindgen(method, getter = rotation)]
+    pub fn rotation(this: &Mesh) -> Euler;
 
     #[wasm_bindgen(extends = Object3D)]
     pub type Camera;
@@ -36,18 +45,37 @@ extern "C" {
     #[wasm_bindgen(constructor)]
     pub fn new(width: f64, height: f64, depth: f64) -> BoxGeometry;
 
+    pub type Material;
+    
+    #[wasm_bindgen(extends = Material)]
     pub type MeshBasicMaterial;
     #[wasm_bindgen(constructor)]
     pub fn new() -> MeshBasicMaterial;
     #[wasm_bindgen(method, setter = color)]
     pub fn set_color(this: &MeshBasicMaterial, value: &Color);
+    
+    #[wasm_bindgen(extends = Material)]
+    pub type MeshStandardMaterial;
+    #[wasm_bindgen(constructor)]
+    pub fn new() -> MeshStandardMaterial;
+    #[wasm_bindgen(method, setter = color)]
+    pub fn set_color(this: &MeshStandardMaterial, value: &Color);
 
+    #[wasm_bindgen(extends = Object3D)]
     pub type Mesh;
     #[wasm_bindgen(constructor)]
-    pub fn new(geometry: BoxGeometry, material: MeshBasicMaterial) -> Mesh;
-    #[wasm_bindgen(method, getter = rotation)]
-    pub fn rotation(this: &Mesh) -> Euler;
-
+    pub fn new(geometry: &BoxGeometry, material: &Material) -> Mesh;
+    
+    #[wasm_bindgen(extends = Object3D)]
+    pub type Light;
+    #[wasm_bindgen(constructor)]
+    pub fn new(color: u32, intensity: u64) -> Light;
+    
+    #[wasm_bindgen(extends = Light)]
+    pub type PointLight;
+    #[wasm_bindgen(constructor)]
+    pub fn new(color: u32, intensity: f64, distance: f64, decay: f64) -> PointLight;
+    
     pub type Euler;
     #[wasm_bindgen(method, getter = x)]
     pub fn x(this: &Euler) -> f64;
